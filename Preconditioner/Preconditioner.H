@@ -36,6 +36,7 @@ namespace Foam {
 class Preconditioner {
     using mtx = gko::matrix::Csr<scalar>;
     using bj = gko::preconditioner::Jacobi<>;
+    using gs = gko::preconditioner::GaussSeidel<>;
     using ic = gko::preconditioner::Ic<>;
     using ir = gko::solver::Ir<scalar>;
     using cg = gko::solver::Cg<scalar>;
@@ -123,6 +124,22 @@ public:
             auto pre_factory = bj::build()
                                    .with_skip_sorting(skip_sorting)
                                    .with_max_block_size(max_block_size)
+                                   .on(device_exec);
+            return wrap_schwarz(gkomatrix, device_exec, std::move(pre_factory));
+        }
+        if (name == "GS") {
+            word msg = "Generate preconditioner " + name;
+            MLOG_0(verbose_, msg)
+            auto pre_factory = gs::build()
+                                   .with_use_HBMC(true)
+                                   .with_skip_sorting(skip_sorting)
+                                   .with_base_block_size(4)
+                                   .with_lvl_2_block_size(32)
+                                   .with_use_padding(false)
+                                   .with_prepermuted_input(false)
+                                   .with_symmetric_preconditioner(true)
+                                   .with_relaxation_factor(1.5)
+                                   .with_kernel_version(9)
                                    .on(device_exec);
             return wrap_schwarz(gkomatrix, device_exec, std::move(pre_factory));
         }

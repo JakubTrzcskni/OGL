@@ -6,7 +6,7 @@ if(NOT ${OGL_USE_EXTERNAL_GINKGO})
     Ginkgo
     QUITE
     GIT_SHALLOW ON
-    GIT_REPOSITORY  "https://github.com/ginkgo-project/ginkgo.git"
+    GIT_REPOSITORY  "https://github.com/JakubTrzcskni/ginkgo.git"
     GIT_TAG ${GINKGO_CHECKOUT_VERSION}
     )
 
