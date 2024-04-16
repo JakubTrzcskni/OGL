@@ -131,15 +131,16 @@ public:
             word msg = "Generate preconditioner " + name;
             MLOG_0(verbose_, msg)
             auto pre_factory = gs::build()
-                                   .with_use_HBMC(true)
+            .with_use_reference(true)
+                                //    .with_use_HBMC(true)
                                    .with_skip_sorting(skip_sorting)
-                                   .with_base_block_size(4)
-                                   .with_lvl_2_block_size(32)
-                                   .with_use_padding(false)
-                                   .with_prepermuted_input(false)
-                                   .with_symmetric_preconditioner(true)
-                                   .with_relaxation_factor(1.5)
-                                   .with_kernel_version(9)
+                                //    .with_base_block_size(2)
+                                //    .with_lvl_2_block_size(32)
+                                //    .with_use_padding(false)
+                                //    .with_prepermuted_input(false)
+                                //    .with_symmetric_preconditioner(true)
+                                //    .with_relaxation_factor(1.5)
+                                //    .with_kernel_version(9)
                                    .on(device_exec);
             return wrap_schwarz(gkomatrix, device_exec, std::move(pre_factory));
         }
@@ -385,7 +386,7 @@ public:
 
         FatalErrorInFunction
             << "OGL does not support the preconditioner: " << name
-            << "\nValid Choices: none, BJ, ILU, ISAI, IC, Multigrid"
+            << "\nValid Choices: none, BJ, GS, ILU, ISAI, IC, Multigrid"
             << abort(FatalError);
         return {};
     }
